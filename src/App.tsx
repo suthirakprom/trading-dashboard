@@ -9,6 +9,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import JournalPage from './pages/JournalPage';
+import AdminLayout from './components/AdminLayout';
+import UsersPage from './pages/admin/UsersPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -99,6 +101,15 @@ function App() {
             }
           />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="users" element={
+              <Layout>
+                <UsersPage />
+              </Layout>
+            } />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

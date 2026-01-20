@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 # Import routers
-from routers import journal
+from routers import journal, users
 
 app = FastAPI(
     title="Trading Dashboard API",
@@ -26,6 +26,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(journal.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
 
 @app.get("/")
 async def root():

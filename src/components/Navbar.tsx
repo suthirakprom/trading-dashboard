@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { Sun, Moon, Menu, X, BarChart2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Sun, Moon, Menu, X, BarChart2, LogOut, Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const Navbar: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
+    const { isAdmin, signOut } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
 
@@ -13,6 +15,18 @@ export const Navbar: React.FC = () => {
         { name: 'Dashboard', href: '/dashboard' },
         { name: 'Journal', href: '/journal' },
     ];
+
+    if (isAdmin) {
+        navLinks.push({ name: 'Admin', href: '/admin/users' });
+    }
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error("Error signing out:", error);
+        }
+    };
 
     return (
         <nav className="border-b bg-card text-card-foreground sticky top-0 z-50">
@@ -34,20 +48,31 @@ export const Navbar: React.FC = () => {
                                             : 'hover:bg-accent hover:text-accent-foreground'
                                             }`}
                                     >
-                                        {link.name}
+                                        <span className="flex items-center gap-2">
+                                            {link.name === 'Admin' && <Shield size={16} />}
+                                            {link.name}
+                                        </span>
                                     </Link>
                                 ))}
                             </div>
                         </div>
                     </div>
                     <div className="hidden md:block">
-                        <div className="ml-4 flex items-center md:ml-6">
+                        <div className="ml-4 flex items-center md:ml-6 gap-2">
                             <button
                                 onClick={toggleTheme}
                                 className="p-2 rounded-full hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
                                 aria-label="Toggle theme"
                             >
                                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                            </button>
+                            <button
+                                onClick={handleSignOut}
+                                className="p-2 rounded-full hover:bg-red-500/10 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
+                                aria-label="Sign out"
+                                title="Sign out"
+                            >
+                                <LogOut className="h-5 w-5" />
                             </button>
                         </div>
                     </div>
@@ -71,21 +96,31 @@ export const Navbar: React.FC = () => {
                             key={link.name}
                             to={link.href}
                             className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === link.href
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'hover:bg-accent hover:text-accent-foreground'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'hover:bg-accent hover:text-accent-foreground'
                                 }`}
                         >
-                            {link.name}
+                            <span className="flex items-center gap-2">
+                                {link.name === 'Admin' && <Shield size={16} />}
+                                {link.name}
+                            </span>
                         </Link>
                     ))}
                     <div className="pt-4 pb-2 border-t border-border">
-                        <div className="flex items-center px-5">
+                        <div className="flex items-center px-5 flex-col gap-2">
                             <button
                                 onClick={toggleTheme}
                                 className="flex items-center gap-2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground w-full"
                             >
                                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                                 <span>Toggle Theme</span>
+                            </button>
+                            <button
+                                onClick={handleSignOut}
+                                className="flex items-center gap-2 p-2 rounded-md hover:bg-red-500/10 hover:text-red-500 w-full text-left"
+                            >
+                                <LogOut className="h-5 w-5" />
+                                <span>Sign Out</span>
                             </button>
                         </div>
                     </div>
