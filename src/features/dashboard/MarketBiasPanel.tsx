@@ -8,7 +8,8 @@ import {
     Activity,
     Gauge,
     BarChart3,
-    Target
+    Target,
+    RefreshCw
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useChartData } from '../../hooks/useChartData';
@@ -28,7 +29,7 @@ export const MarketBiasPanel: React.FC<MarketBiasPanelProps> = ({
     symbol = 'XAU/USD',
     interval = '1h'
 }) => {
-    const { data, isLoading, error }: { data: any[]; isLoading: boolean; error: string | null } = useChartData(symbol, interval, 120000);
+    const { data, isLoading, error, lastUpdated, refetch } = useChartData(symbol, interval, 120000);
 
     const summary = useMemo(() => {
         if (data.length < 50) return null;
@@ -110,9 +111,22 @@ export const MarketBiasPanel: React.FC<MarketBiasPanelProps> = ({
     if (error || !summary) {
         return (
             <div className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                    <Activity className="h-5 w-5" />
-                    <span>Insufficient data for analysis. Need at least 50 candles.</span>
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Activity className="h-5 w-5" />
+                        <span>Insufficient data for analysis. Need at least 50 candles.</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
+                        <span>Last updated: {lastUpdated ? lastUpdated.toLocaleString() : 'Never'}</span>
+                        <button
+                            onClick={refetch}
+                            disabled={isLoading}
+                            className="flex items-center gap-1 hover:text-foreground transition-colors disabled:opacity-50"
+                        >
+                            <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
+                            Retry
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -137,6 +151,19 @@ export const MarketBiasPanel: React.FC<MarketBiasPanelProps> = ({
                     {getSignalIcon(summary.overallBias)}
                     {formatSignal(summary.overallBias)}
                 </div>
+            </div>
+
+            {/* Last Updated & Refresh */}
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Last updated: {lastUpdated ? lastUpdated.toLocaleString() : 'Never'}</span>
+                <button
+                    onClick={refetch}
+                    disabled={isLoading}
+                    className="flex items-center gap-1 hover:text-foreground transition-colors disabled:opacity-50"
+                >
+                    <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
+                    Refresh
+                </button>
             </div>
 
             {/* Signal Summary Bar */}

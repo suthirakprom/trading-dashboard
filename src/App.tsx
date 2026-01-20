@@ -1,8 +1,8 @@
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MarketBiasPanel } from './features/dashboard/MarketBiasPanel';
-import { EconomicCalendar } from './features/dashboard/EconomicCalendar';
-import { TradeJournal } from './features/dashboard/TradeJournal';
+import { EnhancedNewsCalendar } from './features/dashboard/EnhancedNewsCalendar';
+import { TradingUtilities } from './features/dashboard/TradingUtilities';
 
 function App() {
   return (
@@ -41,19 +41,20 @@ function App() {
           </div>
         </div>
 
-        {/* Bottom Row: Economic Calendar + Trade Journal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <section id="calendar">
-            <EconomicCalendar />
+        {/* Bottom Row: Enhanced News Calendar + Trading Utilities */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
+          <section id="news-calendar" className="lg:col-span-1 h-full">
+            <EnhancedNewsCalendar />
           </section>
 
-          <section id="journal">
-            <TradeJournal />
+          <section id="utilities" className="lg:col-span-1 h-full">
+            <TradingUtilities />
           </section>
         </div>
       </div>
     </Layout>
   );
 }
+
 
 export default App;
