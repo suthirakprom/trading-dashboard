@@ -1,3 +1,15 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Python
+backend/venv/
+backend/.env
+__pycache__/
+*.py[cod]
+*$py.class
+
 # Logs
 logs
 *.log

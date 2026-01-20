@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon, Menu, X, BarChart2 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -6,12 +7,11 @@ import { cn } from '../lib/utils';
 export const Navbar: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
 
     const navLinks = [
-        { name: 'Dashboard', href: '#dashboard' },
-        { name: 'Market', href: '#market' },
-        { name: 'News', href: '#news' },
-        { name: 'Journal', href: '#journal' },
+        { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Journal', href: '/journal' },
     ];
 
     return (
@@ -19,20 +19,23 @@ export const Navbar: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
-                        <div className="flex-shrink-0 flex items-center gap-2">
+                        <Link to="/dashboard" className="flex-shrink-0 flex items-center gap-2">
                             <BarChart2 className="h-8 w-8 text-primary" />
                             <span className="font-bold text-xl tracking-tight">TradeDash</span>
-                        </div>
+                        </Link>
                         <div className="hidden md:block">
                             <div className="ml-10 flex items-baseline space-x-4">
                                 {navLinks.map((link) => (
-                                    <a
+                                    <Link
                                         key={link.name}
-                                        href={link.href}
-                                        className="hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                                        to={link.href}
+                                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === link.href
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'hover:bg-accent hover:text-accent-foreground'
+                                            }`}
                                     >
                                         {link.name}
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
@@ -64,13 +67,16 @@ export const Navbar: React.FC = () => {
             <div className={cn("md:hidden", isMenuOpen ? "block" : "hidden")}>
                 <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     {navLinks.map((link) => (
-                        <a
+                        <Link
                             key={link.name}
-                            href={link.href}
-                            className="block hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md text-base font-medium"
+                            to={link.href}
+                            className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === link.href
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'hover:bg-accent hover:text-accent-foreground'
+                                }`}
                         >
                             {link.name}
-                        </a>
+                        </Link>
                     ))}
                     <div className="pt-4 pb-2 border-t border-border">
                         <div className="flex items-center px-5">

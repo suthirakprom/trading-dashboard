@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Info</title>
+    <style>
+        body {
+            background: #0B0E11;
+            color: #fff;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        pre {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trading App Debug Info</h1>
+    <div id="status">Checking...</div>
+    <h2>Console Errors:</h2>
+    <pre id="errors">None yet...</pre>
+    
+    <script>
+        const errors = [];
+        const originalError = console.error;
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            document.getElementById('errors').textContent = errors.join('\n\n');
+            originalError.apply(console, args);
+        };
+        
+        window.onerror = function(msg, url, line, col, error) {
+            const errorMsg = `Error: ${msg}\nAt: ${url}:${line}:${col}\n${error?.stack || ''}`;
+            errors.push(errorMsg);
+            document.getElementById('errors').textContent = errors.join('\n\n');
+        };
+        
+        setTimeout(() => {
+            if (errors.length === 0) {
+                document.getElementById('status').innerHTML = '<span class="success">✓ No errors detected</span>';
+                document.getElementById('errors').textContent = 'No errors found. The issue might be:\n1. React Router not configured\n2. Missing dependencies\n3. Auth redirect loop';
+            } else {
+                document.getElementById('status').innerHTML = '<span class="error">✗ Errors found</span>';
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
